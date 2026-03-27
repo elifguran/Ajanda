@@ -141,15 +141,6 @@ div.innerHTML=`
 <div class="note">${note}</div>
 `;
 
-div.onclick=function(){
-let newNote=prompt("Not ekle:",note);
-
-if(newNote!==null){
-localStorage.setItem(dateStr,newNote);
-drawCalendar();
-}
-};
-
 calendar.appendChild(div);
 }
 }
