@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<title>2026 Takvimli Ajanda</title>
+
+<style>
+
+body{
+font-family:Arial;
+background:#f4f4f4;
+text-align:center;
+}
+
+h1{
+margin-top:20px;
+}
+
+.header{
+display:flex;
+justify-content:center;
+align-items:center;
+gap:20px;
+margin:20px;
+}
+
+button{
+padding:10px;
+font-size:18px;
+cursor:pointer;
+}
+
+.calendar{
+display:grid;
+grid-template-columns:repeat(7,1fr);
+gap:5px;
+max-width:700px;
+margin:auto;
+}
+
+.day{
+background:white;
+border:1px solid #ccc;
+padding:10px;
+height:80px;
+cursor:pointer;
+}
+
+.day:hover{
+background:#eaeaea;
+}
+
+.note{
+font-size:12px;
+margin-top:5px;
+color:#333;
+}
+
+.weekdays{
+display:grid;
+grid-template-columns:repeat(7,1fr);
+max-width:700px;
+margin:auto;
+font-weight:bold;
+margin-bottom:5px;
+}
+
+</style>
+</head>
+
+<body>
+
+<h1>2026 Takvimli Ajanda</h1>
+
+<div class="header">
+
+<button onclick="prevMonth()">⬅</button>
+
+<h2 id="monthTitle"></h2>
+
+<button onclick="nextMonth()">➡</button>
+
+</div>
+
+<div class="weekdays">
+<div>Pzt</div>
+<div>Sal</div>
+<div>Çar</div>
+<div>Per</div>
+<div>Cum</div>
+<div>Cts</div>
+<div>Paz</div>
+</div>
+
+<div class="calendar" id="calendar"></div>
+
+<script>
+
+const months=[
+"Ocak","Şubat","Mart","Nisan","Mayıs","Haziran",
+"Temmuz","Ağustos","Eylül","Ekim","Kasım","Aralık"
+];
+
+let currentMonth=0;
+
+function drawCalendar(){
+
+const calendar=document.getElementById("calendar");
+calendar.innerHTML="";
+
+document.getElementById("monthTitle").innerText=
+months[currentMonth]+" 2026";
+
+let firstDay=new Date(2026,currentMonth,1).getDay();
+if(firstDay===0) firstDay=7;
+
+let days=new Date(2026,currentMonth+1,0).getDate();
+
+for(let i=1;i<firstDay;i++){
+let empty=document.createElement("div");
+calendar.appendChild(empty);
+}
+
+for(let d=1;d<=days;d++){
+
+let div=document.createElement("div");
+div.className="day";
+
+let dateStr=`2026-${currentMonth+1}-${d}`;
+
+let note=localStorage.getItem(dateStr) || "";
+
+div.innerHTML=`
+<b>${d}</b>
+<div class="note">${note}</div>
+`;
+
+div.onclick=function(){
+
+let newNote=prompt("Not ekle:",note);
+
+if(newNote!==null){
+
+localStorage.setItem(dateStr,newNote);
+
+drawCalendar();
+
+}
+
+}
+
+calendar.appendChild(div);
+
+}
+
+}
+
+function nextMonth(){
+
+if(currentMonth<11){
+currentMonth++;
+drawCalendar();
+}
+
+}
+
+function prevMonth(){
+
+if(currentMonth>0){
+currentMonth--;
+drawCalendar();
+}
+
+}
+
+drawCalendar();
+
+</script>
+
+</body>
+</html>
