@@ -65,6 +65,11 @@ font-weight:bold;
 margin-bottom:5px;
 }
 
+.today{
+background:#ffd6d6;
+border:2px solid red;
+}
+
 </style>
 </head>
 
@@ -116,6 +121,11 @@ if(firstDay===0) firstDay=7;
 
 let days=new Date(2026,currentMonth+1,0).getDate();
 
+const today = new Date();
+const todayYear = today.getFullYear();
+const todayMonth = today.getMonth();
+const todayDate = today.getDate();
+
 for(let i=1;i<firstDay;i++){
 let empty=document.createElement("div");
 calendar.appendChild(empty);
@@ -130,24 +140,15 @@ let dateStr=`2026-${currentMonth+1}-${d}`;
 
 let note=localStorage.getItem(dateStr) || "";
 
+if(todayYear===2026 && todayMonth===currentMonth && todayDate===d){
+div.classList.add("today");
+}
+
 div.innerHTML=`
 <b>${d}</b>
 <div class="note">${note}</div>
 `;
 
-div.onclick=function(){
-
-let newNote=prompt("Not ekle:",note);
-
-if(newNote!==null){
-
-localStorage.setItem(dateStr,newNote);
-
-drawCalendar();
-
-}
-
-}
 
 calendar.appendChild(div);
 
