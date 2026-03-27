@@ -5,7 +5,6 @@
 <title>2026 Takvimli Ajanda</title>
 
 <style>
-
 body{
 font-family:Arial;
 background:#f4f4f4;
@@ -69,7 +68,6 @@ margin-bottom:5px;
 background:#ffd6d6;
 border:2px solid red;
 }
-
 </style>
 </head>
 
@@ -78,13 +76,9 @@ border:2px solid red;
 <h1>2026 Takvimli Ajanda</h1>
 
 <div class="header">
-
 <button onclick="prevMonth()">⬅</button>
-
 <h2 id="monthTitle"></h2>
-
 <button onclick="nextMonth()">➡</button>
-
 </div>
 
 <div class="weekdays">
@@ -100,13 +94,13 @@ border:2px solid red;
 <div class="calendar" id="calendar"></div>
 
 <script>
-
 const months=[
 "Ocak","Şubat","Mart","Nisan","Mayıs","Haziran",
 "Temmuz","Ağustos","Eylül","Ekim","Kasım","Aralık"
 ];
 
-let currentMonth=0;
+const today = new Date();
+let currentMonth = today.getMonth();
 
 function drawCalendar(){
 
@@ -121,7 +115,6 @@ if(firstDay===0) firstDay=7;
 
 let days=new Date(2026,currentMonth+1,0).getDate();
 
-const today = new Date();
 const todayYear = today.getFullYear();
 const todayMonth = today.getMonth();
 const todayDate = today.getDate();
@@ -137,7 +130,6 @@ let div=document.createElement("div");
 div.className="day";
 
 let dateStr=`2026-${currentMonth+1}-${d}`;
-
 let note=localStorage.getItem(dateStr) || "";
 
 if(todayYear===2026 && todayMonth===currentMonth && todayDate===d){
@@ -149,33 +141,34 @@ div.innerHTML=`
 <div class="note">${note}</div>
 `;
 
+div.onclick=function(){
+let newNote=prompt("Not ekle:",note);
+
+if(newNote!==null){
+localStorage.setItem(dateStr,newNote);
+drawCalendar();
+}
+};
 
 calendar.appendChild(div);
-
 }
-
 }
 
 function nextMonth(){
-
 if(currentMonth<11){
 currentMonth++;
 drawCalendar();
 }
-
 }
 
 function prevMonth(){
-
 if(currentMonth>0){
 currentMonth--;
 drawCalendar();
 }
-
 }
 
 drawCalendar();
-
 </script>
 
 </body>
