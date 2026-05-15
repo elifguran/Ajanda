@@ -5,7 +5,7 @@
 <title>2026 Takvimli Ajanda</title>
 
 <style>
-/* Senin Stil Kodların Aynen Korunmuştur */
+/* Stil kodların aynen korunmuştur */
 body{
 font-family:Arial;
 background:#f4f4f4;
@@ -175,7 +175,6 @@ opacity:0.4;
 
 <body>
 
-<!-- Ses Dosyası (Hatırlatıcı için eklendi) -->
 <audio id="bildirimSesi" src="https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3"></audio>
 
 <button class="temaButon" onclick="temaDegistir()">🌙</button>
@@ -201,8 +200,8 @@ opacity:0.4;
 <div class="takvim" id="takvim"></div>
 
 <div class="gorevAlani">
-<h2>Görevler</h2>
-<input type="text" id="gorevInput" placeholder="Görev gir">
+<h2 id="gorevBaslik">Not Ekle</h2>
+<input type="text" id="gorevInput" placeholder="Görevinizi yazın...">
 <input type="date" id="tarihInput">
 <input type="time" id="saatInput">
 
@@ -221,36 +220,17 @@ opacity:0.4;
 </div>
 
 <script>
-// Senin JavaScript Mantığın Üzerine Eklemeler Yapılmıştır
-
 const aylar=[
 "Ocak","Şubat","Mart","Nisan","Mayıs","Haziran",
 "Temmuz","Ağustos","Eylül","Ekim","Kasım","Aralık"
 ];
 
-// 2026 Kapsamlı Özel Günler
 const ozelGunler = {
-"1-1":"Yılbaşı",
-"14-2":"Sevgililer Günü",
-"8-3":"Dünya Kadınlar Günü",
-"20-3":"Ramazan Bayramı 1. Gün",
-"21-3":"Ramazan Bayramı 2. Gün",
-"22-3":"Ramazan Bayramı 3. Gün",
-"23-4":"23 Nisan",
-"1-5":"1 Mayıs Emek Bayramı",
-"10-5":"Anneler Günü",
-"19-5":"19 Mayıs",
-"27-5":"Kurban Bayramı 1. Gün",
-"28-5":"Kurban Bayramı 2. Gün",
-"29-5":"Kurban Bayramı 3. Gün",
-"30-5":"Kurban Bayramı 4. Gün",
-"21-6":"Babalar Günü",
-"15-7":"15 Temmuz",
-"30-8":"30 Ağustos",
-"29-10":"29 Ekim",
-"10-11":"Atatürk'ü Anma",
-"24-11":"Öğretmenler Günü",
-"31-12":"Yılbaşı Gecesi"
+"1-1":"Yılbaşı", "14-2":"Sevgililer Günü", "8-3":"Kadınlar Günü",
+"20-3":"Ramazan Bayramı 1. Gün", "21-3":"Ramazan Bayramı 2. Gün", "22-3":"Ramazan Bayramı 3. Gün",
+"23-4":"23 Nisan", "1-5":"1 Mayıs", "10-5":"Anneler Günü", "19-5":"19 Mayıs",
+"27-5":"Kurban Bayramı 1. Gün", "28-5":"Kurban Bayramı 2. Gün", "30-8":"30 Ağustos",
+"29-10":"29 Ekim", "10-11":"Atatürk'ü Anma", "24-11":"Öğretmenler Günü"
 };
 
 const bugun = new Date();
@@ -276,11 +256,19 @@ for(let d=1;d<=toplamGun;d++){
     let div=document.createElement("div");
     div.className="gun";
     
-    // Tıklanan günü otomatik seçme
+    // TAKVİMDEN GÜNE TIKLANDIĞINDA:
     div.onclick = function() {
         const ayFormat = (gecerliAy + 1).toString().padStart(2, '0');
         const gunFormat = d.toString().padStart(2, '0');
+        
+        // 1. Tarihi kutusuna yazdır
         document.getElementById("tarihInput").value = `2026-${ayFormat}-${gunFormat}`;
+        
+        // 2. "Görevinizi yazın" kısmına odaklan (Klavye açılır/Not kısmı aktifleşir)
+        document.getElementById("gorevInput").focus();
+        
+        // 3. Başlığı seçilen güne göre güncelle (Görsel geri bildirim)
+        document.getElementById("gorevBaslik").innerText = d + " " + aylar[gecerliAy] + " İçin Not";
     };
 
     if(bugun.getFullYear()===2026 && bugun.getMonth()===gecerliAy && bugun.getDate()===d){
@@ -295,7 +283,6 @@ for(let d=1;d<=toplamGun;d++){
 }
 }
 
-// HATIRLATICI KONTROLÜ (Senin koduna eklenen saniyelik kontrol)
 setInterval(function() {
     const simdi = new Date();
     const bildirimSesi = document.getElementById("bildirimSesi");
@@ -311,9 +298,8 @@ setInterval(function() {
         else if (g.hatirlatma === "1 Gün Önce") hatirlatVakti.setDate(gorevVakti.getDate() - 1);
 
         if (simdi >= hatirlatVakti && simdi < gorevVakti) {
-            bildirimSesi.play().catch(e => console.log("Ses çalma etkileşim bekliyor."));
+            bildirimSesi.play().catch(e => console.log("Ses için etkileşim lazım."));
             alert(`🔔 HATIRLATMA: \n\nGörev: ${g.metin}\nZaman: ${g.saat}`);
-            
             g.bildirimBitti = true; 
             localStorage.setItem("gorevler", JSON.stringify(gorevler));
             gorevleriGoster();
@@ -354,6 +340,7 @@ function gorevEkle(){
     localStorage.setItem("gorevler",JSON.stringify(gorevler));
     gorevleriGoster();
     gorevInput.value="";
+    document.getElementById("gorevBaslik").innerText = "Not Ekle";
 }
 
 function gorevleriGoster(){
@@ -362,16 +349,9 @@ function gorevleriGoster(){
     gorevler.forEach((gorev,index)=>{
         let li=document.createElement("li");
         if(gorev.tamamlandi) li.classList.add("tamamlandi");
-
         li.innerHTML=`
-            <div>
-                <b>${gorev.metin}</b><br>
-                <small>📅 ${gorev.tarih} | ⏰ ${gorev.saat}</small>
-            </div>
-            <div>
-                <button onclick="tamamla(${index})" style="background:#28a745; margin-right:5px">✔</button>
-                <button onclick="sil(${index})" style="background:#dc3545">❌</button>
-            </div>
+            <div><b>${gorev.metin}</b><br><small>📅 ${gorev.tarih} | ⏰ ${gorev.saat}</small></div>
+            <div><button onclick="tamamla(${index})" style="background:#28a745; margin-right:5px">✔</button><button onclick="sil(${index})" style="background:#dc3545">❌</button></div>
         `;
         liste.appendChild(li);
     });
